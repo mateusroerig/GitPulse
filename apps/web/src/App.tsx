@@ -9,6 +9,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { SiC, SiCplusplus, SiCss3, SiDart, SiElixir, SiGo, SiHaskell, SiHtml5, SiJavascript, SiKotlin, SiLua, SiPhp, SiPython, SiR, SiRuby, SiRust, SiScala, SiSwift, SiTypescript } from 'react-icons/si'
+import { TbActivity, TbBrandCSharp, TbCode, TbGitFork, TbStarFilled } from 'react-icons/tb'
+import type { IconType } from 'react-icons'
 
 type RepositoryData = {
   fullName: string
@@ -71,6 +74,42 @@ const formatWeekLabel = (timestampInSeconds: number): string => {
   const year = String(date.getFullYear()).slice(-2)
 
   return `${month}/${year}`
+}
+
+const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat('pt-BR').format(value)
+}
+
+const getLanguageIcon = (language: string): IconType => {
+  const normalizedLanguage = language.toLowerCase()
+
+  const languageIcons: Record<string, IconType> = {
+    typescript: SiTypescript,
+    javascript: SiJavascript,
+    python: SiPython,
+    java: TbCode,
+    kotlin: SiKotlin,
+    go: SiGo,
+    rust: SiRust,
+    c: SiC,
+    'c++': SiCplusplus,
+    'c#': TbBrandCSharp,
+    php: SiPhp,
+    ruby: SiRuby,
+    swift: SiSwift,
+    dart: SiDart,
+    shell: TbCode,
+    html: SiHtml5,
+    css: SiCss3,
+    scala: SiScala,
+    r: SiR,
+    'objective-c': TbCode,
+    lua: SiLua,
+    elixir: SiElixir,
+    haskell: SiHaskell,
+  }
+
+  return languageIcons[normalizedLanguage] ?? TbCode
 }
 
 function App() {
@@ -231,26 +270,48 @@ function App() {
         ) : null}
 
         {repositoryData ? (
-          <article className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
-            <p className="font-semibold">Repositório encontrado com sucesso.</p>
-            <p className="mt-2">
-              <span className="font-medium">Nome:</span> {repositoryData.fullName}
-            </p>
-            <p>
-              <span className="font-medium">Descrição:</span> {repositoryData.description}
-            </p>
-            <p>
-              <span className="font-medium">Stars:</span> {repositoryData.stars}
-            </p>
-            <p>
-              <span className="font-medium">Forks:</span> {repositoryData.forks}
-            </p>
-            <p>
-              <span className="font-medium">Linguagem:</span> {repositoryData.language}
-            </p>
-            <p>
-              <span className="font-medium">Health Score:</span> {repositoryData.healthScore}
-            </p>
+          <article className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-4 text-slate-900">
+            <div className="rounded-lg border border-emerald-200 bg-white/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Repositório encontrado
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-slate-900 sm:text-xl">{repositoryData.fullName}</h2>
+              <p className="mt-2 text-sm text-slate-700">{repositoryData.description}</p>
+            </div>
+
+            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Stars</p>
+                <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
+                  <TbStarFilled size={20} aria-hidden="true" className="text-slate-700" />
+                  <span>{formatNumber(repositoryData.stars)}</span>
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Forks</p>
+                <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
+                  <TbGitFork size={20} aria-hidden="true" className="text-slate-700" />
+                  <span>{formatNumber(repositoryData.forks)}</span>
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Linguagem</p>
+                <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
+                  {(() => {
+                    const LanguageIcon = getLanguageIcon(repositoryData.language)
+                    return <LanguageIcon size={20} aria-hidden="true" className="text-slate-700" />
+                  })()}
+                  <span>{repositoryData.language}</span>
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Health Score</p>
+                <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-slate-900">
+                  <TbActivity size={20} aria-hidden="true" className="text-slate-700" />
+                  <span>{repositoryData.healthScore}</span>
+                </p>
+              </div>
+            </div>
           </article>
         ) : null}
 
@@ -269,7 +330,10 @@ function App() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="week" minTickGap={24} />
                     <YAxis allowDecimals={false} />
-                    <Tooltip />
+                    <Tooltip
+                      formatter={(value) => [`${formatNumber(Number(value))} commits`, 'Total']}
+                      labelFormatter={(label) => `Semana: ${label}`}
+                    />
                     <Line
                       type="monotone"
                       dataKey="commits"
