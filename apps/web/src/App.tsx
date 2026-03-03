@@ -240,9 +240,9 @@ function HomePage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
       <section className="w-full max-w-2xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <header className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-slate-900">GitPulse</h1>
+          <img src="/logo.png" alt="GitPulse" className="mx-auto h-28 w-auto" />
           <p className="mt-2 text-sm text-slate-600 sm:text-base">
-            Informe a URL de um repositório público do GitHub para consultar seus dados.
+            Consulte e visualize os principais indicadores de saúde e atividade de qualquer repositório público do GitHub.
           </p>
         </header>
 
